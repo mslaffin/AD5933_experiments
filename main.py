@@ -13,12 +13,6 @@ def main():
     
     app = AD5933GUI(root)
     
-    def on_window_resize(event):
-        print(f"\nWindow resize event:")
-        print(f"New window size: {root.winfo_width()}x{root.winfo_height()}")
-    
-    root.bind('<Configure>', on_window_resize)
-    
     root.geometry('800x600')
     root.mainloop()
 

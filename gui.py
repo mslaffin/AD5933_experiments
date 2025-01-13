@@ -72,6 +72,9 @@ class AD5933GUI:
         view_menu.add_command(label="Linear Plot", command=lambda: self.set_plot_type('linear'))
         view_menu.add_command(label="Bode Plot", command=lambda: self.set_plot_type('bode'))
         view_menu.add_command(label="Phase Plot", command=lambda: self.set_plot_type('phase'))
+        view_menu.add_command(label="Impedance (Ohms)", command=lambda: self.set_plot_type('ohms'))
+        view_menu.add_command(label="Gain/Phase", command=lambda: self.set_plot_type('gain_phase'))
+        
         view_menu.add_separator()
         view_menu.add_checkbutton(label="Show Grid", command=self.plot.toggle_grid)
 
@@ -430,10 +433,19 @@ class AD5933GUI:
             self.canvas.create_line(padding - 5, y, padding, y, fill="black")
             self.canvas.create_text(padding - 10, y, text=f"{ph_val:.1f}°", anchor="e")
 
-        self.canvas.create_text(w // 2, h - padding // 2, text="Frequency (Hz)", 
-                                anchor="center", font=("Arial", 12, "bold"))
-        self.canvas.create_text(padding // 2, h // 2, text="Phase (degrees)", 
-                                anchor="center", angle=90, font=("Arial", 12, "bold"))
+        self.canvas.create_text(
+            w // 2, 
+            h - padding * 0.2, 
+            text="Frequency (Hz)", 
+            anchor="center", 
+            font=("Arial", 12, "bold"))
+        self.canvas.create_text(
+            padding * 0.5, 
+            h // 2, 
+            text="Phase (degrees)", 
+            anchor="center", 
+            angle=90, 
+            font=("Arial", 12, "bold"))
 
         prev_x = None
         prev_y = None
@@ -504,10 +516,19 @@ class AD5933GUI:
             self.canvas.create_text(padding - 10, y_pos, text=f"{db_val:.1f}", anchor="e")
 
         # Labels
-        self.canvas.create_text(w // 2, h - 5, text="Frequency (Hz)",
-                                anchor="s", font=("Arial", 12, "bold"))
-        self.canvas.create_text(15, h // 2, text="Magnitude (dB)",
-                                anchor="center", angle=90, font=("Arial", 12, "bold"))
+        self.canvas.create_text(
+            w // 2, 
+            h - padding * 0.2, 
+            text="Frequency (Hz)",
+            anchor="s", 
+            font=("Arial", 12, "bold"))
+        self.canvas.create_text(
+            padding * 0.5, 
+            h // 2, 
+            text="Magnitude (dB)",
+            anchor="center", 
+            angle=90, 
+            font=("Arial", 12, "bold"))
 
         prev_x = None
         prev_y = None
@@ -603,16 +624,9 @@ class AD5933GUI:
             w = max(event.width, 200)
             h = max(event.height, 200)
 
-            print(f"Canvas resize event: width={w}, height={h}")
-            print(f"Window size: {self.master.winfo_width()}x{self.master.winfo_height()}")
-            print(f"Frame size: {self.main_frame.winfo_width()}x{self.main_frame.winfo_height()}")
-            
             self.canvas.config(width=w, height=h)
             self.canvas.configure(scrollregion=(0, 0, w, h))
 
-            self.canvas.update_idletasks()
-            print(f"Post-update canvas size: {self.canvas.winfo_width()}x{self.canvas.winfo_height()}")
-  
             if self.data_points:
                 if self.plot.plot_type == 'bode':
                     self.redraw_bode_plot()
